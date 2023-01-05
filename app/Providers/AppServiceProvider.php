@@ -6,22 +6,21 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+
+    public function register(): void
     {
-        //
+        $this->app->bind(
+            \JeffGreco13\FilamentBreezy\Pages\MyProfile::class,
+            \App\Filament\Pages\MyProfile::class
+        );
+
+        $this->app->bind(
+            \JeffGreco13\FilamentBreezy\Http\Livewire\Auth\Register::class,
+            \App\Filament\Http\Livewire\Auth\Register::class
+        );
     }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         //
     }
