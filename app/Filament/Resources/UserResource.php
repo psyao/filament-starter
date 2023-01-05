@@ -12,11 +12,13 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Hash;
+use STS\FilamentImpersonate\Impersonate;
+use XliteDev\FilamentImpersonate\Tables\Actions\ImpersonateAction;
 
 class UserResource extends Resource
 {
+
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
@@ -26,21 +28,21 @@ class UserResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('first_name')
-                    ->required()
-                    ->maxLength(255),
+                                          ->required()
+                                          ->maxLength(255),
                 Forms\Components\TextInput::make('last_name')
-                    ->required()
-                    ->maxLength(255),
+                                          ->required()
+                                          ->maxLength(255),
                 Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
+                                          ->email()
+                                          ->required()
+                                          ->maxLength(255),
                 Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required(fn (string $context): bool => $context === 'create')
-                    ->maxLength(255)
-                    ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                    ->dehydrated(fn ($state) => filled($state)),
+                                          ->password()
+                                          ->required(fn(string $context): bool => $context === 'create')
+                                          ->maxLength(255)
+                                          ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                                          ->dehydrated(fn($state) => filled($state)),
             ]);
     }
 
@@ -49,17 +51,17 @@ class UserResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')
-                    ->sortable(),
+                                         ->sortable(),
                 Tables\Columns\TextColumn::make('last_name')
-                    ->sortable(),
+                                         ->sortable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->sortable(),
+                                         ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime('d.m.Y H:m')
-                    ->sortable(),
+                                         ->dateTime('d.m.Y H:m')
+                                         ->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime('d.m.Y H:m')
-                    ->sortable(),
+                                         ->dateTime('d.m.Y H:m')
+                                         ->sortable(),
             ])
             ->filters([
                 Filter::make('created_at')
@@ -71,35 +73,36 @@ class UserResource extends Resource
                           return $query
                               ->when(
                                   $data['created_from'],
-                                  fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                                  fn(Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
                               )
                               ->when(
                                   $data['created_until'],
-                                  fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                                  fn(Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
                               );
-                      })
+                      }),
             ])
             ->actions([
+                ImpersonateAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
+            'index'  => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'edit'   => Pages\EditUser::route('/{record}/edit'),
         ];
-    }    
+    }
 }
