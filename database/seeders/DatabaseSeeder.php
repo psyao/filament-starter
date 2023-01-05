@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
             'email'      => 'steve.aguet@marvelous.digital',
         ]);
 
-//        User::factory(10)->create();
+        User::factory(49)->create();
     }
 }
